@@ -4,15 +4,15 @@ import styled from "styled-components/native";
 
 const Container = styled.View`
   padding: 16px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.background.primary};
   border-bottom-width: 1px;
-  border-bottom-color: #e0e0e0;
+  border-bottom-color: ${(props) => props.theme.border};
 `;
 
 const StyledInput = styled.TextInput`
   font-size: 16px;
   padding: 12px;
-  background-color: #f5f5f5;
+  background-color: ${(props) => props.theme.background.secondary};
   border-radius: 8px;
 `;
 
@@ -35,7 +35,7 @@ export const NoteInput: React.FC<NoteInputProps> = ({ onAdd }) => {
       <StyledInput
         value={text}
         onChangeText={setText}
-        placeholder="Adicionar tarefa..."
+        placeholder="Adicionar nota..."
         maxLength={280}
         onSubmitEditing={handleSubmit}
         returnKeyType="done"

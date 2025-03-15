@@ -1,46 +1,91 @@
-import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 import { HomeScreen } from "./src/screens/HomeScreen";
-import { ArchivedScreen } from "./src/screens/ArchivedScreen";
 import { TasksScreen } from "./src/screens/TasksScreen";
-import { BottomNavigation, Screen } from "./src/components/BottomNavigation";
-import styled from "styled-components/native";
+import { ArchivedScreen } from "./src/screens/ArchivedScreen";
+import { SettingsScreen } from "./src/screens/SettingsScreen";
+import { ThemeProvider, useTheme } from "./src/theme/ThemeContext";
+import { StatusBar } from "expo-status-bar";
 
-const Container = styled.View`
-  flex: 1;
-`;
+const Tab = createBottomTabNavigator();
 
-const ScreenContainer = styled.View`
-  flex: 1;
-`;
-
-export default function App() {
-  const [activeScreen, setActiveScreen] = useState<Screen>("home");
-
-  const renderScreen = () => {
-    switch (activeScreen) {
-      case "home":
-        return <HomeScreen />;
-      case "tasks":
-        return <TasksScreen />;
-      case "archived":
-        return <ArchivedScreen />;
-      case "settings":
-        // Podemos adicionar uma tela de configurações no futuro
-        return <HomeScreen />;
-      default:
-        return <HomeScreen />;
-    }
-  };
+function MainApp() {
+  const { theme, isDarkMode } = useTheme();
 
   return (
-    <Container>
-      <StatusBar style="auto" />
-      <ScreenContainer>{renderScreen()}</ScreenContainer>
-      <BottomNavigation
-        activeScreen={activeScreen}
-        onScreenChange={setActiveScreen}
-      />
-    </Container>
+    <>
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
+      <NavigationContainer
+        theme={{
+          dark: isDarkMode,
+          colors: {
+            primary: theme.primary,
+            background: theme.background.primary,
+            card: theme.background.primary,
+            text: theme.text.primary,
+            border: theme.border,
+            notification: theme.error,
+          },
+        }}
+      >
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              if (route.name === "Home") {
+                iconName = focused ? "home" : "home-outline";
+              } else if (route.name === "Tasks") {
+                iconName = focused ? "checkbox" : "checkbox-outline";
+              } else if (route.name === "Archived") {
+                iconName = focused ? "archive" : "archive-outline";
+              } else if (route.name === "Settings") {
+                iconName = focused ? "settings" : "settings-outline";
+              }
+
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: theme.primary,
+            tabBarInactiveTintColor: theme.text.secondary,
+            tabBarStyle: {
+              backgroundColor: theme.background.primary,
+              borderTopColor: theme.border,
+            },
+            headerShown: false,
+          })}
+        >
+          <Tab.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ title: "Início" }}
+          />
+          <Tab.Screen
+            name="Tasks"
+            component={TasksScreen}
+            options={{ title: "Tarefas" }}
+          />
+          <Tab.Screen
+            name="Archived"
+            component={ArchivedScreen}
+            options={{ title: "Arquivados" }}
+          />
+          <Tab.Screen
+            name="Settings"
+            component={SettingsScreen}
+            options={{ title: "Configurações" }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <MainApp />
+    </ThemeProvider>
   );
 }

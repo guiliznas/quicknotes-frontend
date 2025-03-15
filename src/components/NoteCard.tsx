@@ -6,12 +6,13 @@ import { CategorySelector } from "./CategorySelector";
 import { Ionicons } from "@expo/vector-icons";
 import { formatTime } from "../utils/dateFormatter";
 import { NoteEditModal } from "./NoteEditModal";
+import { useTheme } from "../theme/ThemeContext";
 
 const Card = styled.View`
   padding: 16px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.background.primary};
   border-bottom-width: 1px;
-  border-bottom-color: #f0f0f0;
+  border-bottom-color: ${(props) => props.theme.border};
   flex-direction: row;
   align-items: center;
 `;
@@ -20,12 +21,14 @@ const CheckboxContainer = styled.TouchableOpacity`
   width: 20px;
   height: 20px;
   border-width: 2px;
-  border-color: ${(props) => (props.checked ? "#4caf50" : "#e0e0e0")};
+  border-color: ${(props) =>
+    props.checked ? props.theme.success : props.theme.border};
   border-radius: 10px;
   justify-content: center;
   align-items: center;
   margin-right: 12px;
-  background-color: ${(props) => (props.checked ? "#4caf50" : "transparent")};
+  background-color: ${(props) =>
+    props.checked ? props.theme.success : "transparent"};
 `;
 
 const ContentContainer = styled.View`
@@ -40,14 +43,15 @@ const TextContainer = styled.View`
 
 const NoteText = styled.Text<{ completed: boolean }>`
   font-size: 16px;
-  color: ${(props) => (props.completed ? "#9e9e9e" : "#000000")};
+  color: ${(props) =>
+    props.completed ? props.theme.text.disabled : props.theme.text.primary};
   text-decoration-line: ${(props) =>
     props.completed ? "line-through" : "none"};
 `;
 
 const TimeText = styled.Text`
   font-size: 12px;
-  color: #9e9e9e;
+  color: ${(props) => props.theme.text.disabled};
   margin-top: 4px;
 `;
 
@@ -82,6 +86,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [reference, setReference] = useState(note.reference || "");
   const [linkId, setLinkId] = useState("");
+
+  const { theme, isDarkMode } = useTheme();
 
   const handleReferenceSave = () => {
     if (note.category === "literature") {
@@ -125,7 +131,9 @@ export const NoteCard: React.FC<NoteCardProps> = ({
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Card>
           <CheckboxContainer checked={isCompleted} onPress={toggleCompleted}>
-            {isCompleted && <Ionicons name="checkmark" size={14} color="#ffffff" />}
+            {isCompleted && (
+              <Ionicons name="checkmark" size={14} color="#ffffff" />
+            )}
           </CheckboxContainer>
 
           <ContentContainer>
@@ -144,7 +152,9 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                 <Ionicons
                   name={isArchived ? "archive" : "archive-outline"}
                   size={20}
-                  color={isArchived ? "#9e9e9e" : "#757575"}
+                  color={
+                    isArchived ? theme.text.disabled : theme.text.secondary
+                  }
                 />
               </ArchiveButton>
             </ActionsContainer>

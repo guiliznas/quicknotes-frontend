@@ -8,6 +8,7 @@ const API_URL = `http://${
 export const useNotes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [showArchived, setShowArchived] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchNotes();
@@ -15,12 +16,15 @@ export const useNotes = () => {
 
   const fetchNotes = async () => {
     try {
+      setIsRefreshing(true);
       const response = await fetch(API_URL);
       const data = await response.json();
       console.log(data);
       setNotes(data);
     } catch (e) {
       console.error("Erro ao carregar notas:", e);
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -89,6 +93,8 @@ export const useNotes = () => {
   return {
     notes: filteredNotes,
     allNotes: notes,
+    isRefreshing,
+    fetchNotes,
     addNote,
     updateNote,
     deleteNote,

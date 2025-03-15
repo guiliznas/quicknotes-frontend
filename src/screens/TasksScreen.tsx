@@ -1,26 +1,28 @@
 import React from "react";
-import { SectionList, Text } from "react-native";
+import { SectionList, Text, RefreshControl } from "react-native";
 import styled from "styled-components/native";
 import { useNotes } from "../hooks/useNotes";
 import { NoteCard } from "../components/NoteCard";
 import { Note } from "../types";
 import { CATEGORY_TASK } from "../constants/Text";
 import { formatDate } from "../utils/dateFormatter";
+import { useTheme } from "../theme/ThemeContext";
 
 const Container = styled.View`
   flex: 1;
-  background-color: #f5f5f5;
+  background-color: ${(props) => props.theme.background.secondary};
 `;
 
 const Header = styled.View`
   padding-top: 20px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.background.primary};
 `;
 
 const Title = styled.Text`
   font-size: 24px;
   font-weight: bold;
   padding: 16px;
+  color: ${(props) => props.theme.text.primary};
 `;
 
 const ListContainer = styled.View`
@@ -29,14 +31,14 @@ const ListContainer = styled.View`
 
 const SectionHeader = styled.View`
   padding: 12px 16px;
-  background-color: #e3f2fd;
+  background-color: ${(props) => props.theme.background.secondary};
   border-bottom-width: 1px;
-  border-bottom-color: #bbdefb;
+  border-bottom-color: ${(props) => props.theme.border};
 `;
 
 const SectionTitle = styled.Text`
   font-size: 14px;
-  color: #1976d2;
+  color: ${(props) => props.theme.text.secondary};
   font-weight: 600;
 `;
 
@@ -49,7 +51,7 @@ const EmptyContainer = styled.View`
 
 const EmptyText = styled.Text`
   font-size: 16px;
-  color: #9e9e9e;
+  color: ${(props) => props.theme.text.secondary};
   text-align: center;
 `;
 
@@ -59,7 +61,16 @@ interface Section {
 }
 
 export const TasksScreen: React.FC = () => {
-  const { notes, allNotes, updateNote, linkNote, deleteNote } = useNotes();
+  const {
+    notes,
+    allNotes,
+    updateNote,
+    linkNote,
+    deleteNote,
+    isRefreshing,
+    fetchNotes,
+  } = useNotes();
+  const { theme } = useTheme();
 
   // Filtrar apenas tarefas não arquivadas
   const tasks = notes.filter(
@@ -144,6 +155,14 @@ export const TasksScreen: React.FC = () => {
               </SectionHeader>
             )}
             stickySectionHeadersEnabled={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={fetchNotes}
+                colors={[theme.primary]}
+                tintColor={theme.primary}
+              />
+            }
           />
         ) : (
           <EmptyContainer>
