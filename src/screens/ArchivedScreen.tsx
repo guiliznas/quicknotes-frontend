@@ -24,8 +24,19 @@ const ListContainer = styled.View`
   flex: 1;
 `;
 
+const EmptyContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const EmptyText = styled.Text`
+  font-size: 16px;
+  color: #757575;
+`;
+
 export const ArchivedScreen: React.FC = () => {
-  const { notes, allNotes, updateNote, linkNote } = useNotes();
+  const { notes, allNotes, updateNote, linkNote, deleteNote } = useNotes();
 
   // Filtrar apenas notas arquivadas
   const archivedNotes = allNotes.filter((note) => note.isArchived);
@@ -33,7 +44,7 @@ export const ArchivedScreen: React.FC = () => {
   return (
     <Container>
       <Header>
-        <Title>Notas Arquivadas</Title>
+        <Title>Arquivados</Title>
       </Header>
       <ListContainer>
         <FlatList
@@ -44,9 +55,15 @@ export const ArchivedScreen: React.FC = () => {
               note={item}
               onUpdate={(updates) => updateNote(item._id, updates)}
               onLink={(linkedId) => linkNote(item._id, linkedId)}
+              onDelete={() => deleteNote(item._id)}
               allNotes={allNotes}
             />
           )}
+          ListEmptyComponent={
+            <EmptyContainer>
+              <EmptyText>Nenhuma nota arquivada.</EmptyText>
+            </EmptyContainer>
+          }
         />
       </ListContainer>
     </Container>

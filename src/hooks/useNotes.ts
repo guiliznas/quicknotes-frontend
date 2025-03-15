@@ -63,6 +63,17 @@ export const useNotes = () => {
     }
   };
 
+  const deleteNote = async (id: string) => {
+    try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+      setNotes(notes.filter((note) => note._id !== id));
+    } catch (e) {
+      console.error("Erro ao excluir nota:", e);
+    }
+  };
+
   const linkNote = async (id: string, linkedId: string) => {
     const note = notes.find((n) => n._id === id);
     if (note && note.category === "permanent") {
@@ -80,6 +91,7 @@ export const useNotes = () => {
     allNotes: notes,
     addNote,
     updateNote,
+    deleteNote,
     linkNote,
     setShowArchived,
   };

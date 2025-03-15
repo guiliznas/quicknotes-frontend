@@ -44,7 +44,7 @@ interface Section {
 }
 
 export const HomeScreen: React.FC = () => {
-  const { notes, allNotes, addNote, updateNote, linkNote } = useNotes();
+  const { notes, allNotes, addNote, updateNote, linkNote, deleteNote } = useNotes();
 
   const sections: Section[] = [
     {
@@ -72,6 +72,7 @@ export const HomeScreen: React.FC = () => {
               note={item}
               onUpdate={(updates) => updateNote(item._id, updates)}
               onLink={(linkedId) => linkNote(item._id, linkedId)}
+              onDelete={() => deleteNote(item._id)}
               allNotes={allNotes}
             />
           )}

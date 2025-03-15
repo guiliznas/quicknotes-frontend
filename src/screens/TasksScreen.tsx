@@ -59,7 +59,7 @@ interface Section {
 }
 
 export const TasksScreen: React.FC = () => {
-  const { notes, allNotes, updateNote, linkNote } = useNotes();
+  const { notes, allNotes, updateNote, linkNote, deleteNote } = useNotes();
 
   // Filtrar apenas tarefas não arquivadas
   const tasks = notes.filter(
@@ -134,6 +134,7 @@ export const TasksScreen: React.FC = () => {
                 note={item}
                 onUpdate={(updates) => updateNote(item._id, updates)}
                 onLink={(linkedId) => linkNote(item._id, linkedId)}
+                onDelete={() => deleteNote(item._id)}
                 allNotes={allNotes}
               />
             )}

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { Note } from "../types";
 import { CategorySelector } from "./CategorySelector";
 import { Ionicons } from "@expo/vector-icons";
 import { formatTime } from "../utils/dateFormatter";
+import { NoteEditModal } from "./NoteEditModal";
 
 const Card = styled.View`
   padding: 16px;
@@ -64,20 +65,23 @@ interface NoteCardProps {
   note: Note;
   onUpdate: (updates: Partial<Note>) => void;
   onLink?: (linkedId: string) => void;
-  allNotes: Note[];
+  onDelete?: () => void;
+  allNotes?: Note[];
 }
 
 export const NoteCard: React.FC<NoteCardProps> = ({
   note,
   onUpdate,
   onLink,
+  onDelete,
   allNotes,
 }) => {
-  const [reference, setReference] = useState(note.reference || "");
-  const [linkId, setLinkId] = useState("");
   const [isCompleted, setIsCompleted] = useState(note.isCompleted || false);
   const [isPublic, setIsPublic] = useState(note.isPublic);
   const [isArchived, setIsArchived] = useState(note.isArchived);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [reference, setReference] = useState(note.reference || "");
+  const [linkId, setLinkId] = useState("");
 
   const handleReferenceSave = () => {
     if (note.category === "literature") {
@@ -110,33 +114,51 @@ export const NoteCard: React.FC<NoteCardProps> = ({
     onUpdate({ isArchived: newValue });
   };
 
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
   return (
-    <Card>
-      <CheckboxContainer checked={isCompleted} onPress={toggleCompleted}>
-        {isCompleted && <Ionicons name="checkmark" size={14} color="#ffffff" />}
-      </CheckboxContainer>
+    <>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Card>
+          <CheckboxContainer checked={isCompleted} onPress={toggleCompleted}>
+            {isCompleted && <Ionicons name="checkmark" size={14} color="#ffffff" />}
+          </CheckboxContainer>
 
-      <ContentContainer>
-        <TextContainer>
-          <NoteText completed={isCompleted}>{note.text}</NoteText>
-          <TimeText>{formatTime(new Date(note.timestamp))}</TimeText>
-        </TextContainer>
+          <ContentContainer>
+            <TextContainer>
+              <NoteText completed={isCompleted}>{note.text}</NoteText>
+              <TimeText>{formatTime(new Date(note.timestamp))}</TimeText>
+            </TextContainer>
 
-        <ActionsContainer>
-          <CategorySelector
-            selected={note.category}
-            onSelect={(category) => onUpdate({ category })}
-            compact
-          />
-          <ArchiveButton onPress={toggleArchived}>
-            <Ionicons
-              name={isArchived ? "archive" : "archive-outline"}
-              size={20}
-              color={isArchived ? "#9e9e9e" : "#757575"}
-            />
-          </ArchiveButton>
-        </ActionsContainer>
-      </ContentContainer>
-    </Card>
+            <ActionsContainer>
+              <CategorySelector
+                selected={note.category}
+                onSelect={(category) => onUpdate({ category })}
+                compact
+              />
+              <ArchiveButton onPress={toggleArchived}>
+                <Ionicons
+                  name={isArchived ? "archive" : "archive-outline"}
+                  size={20}
+                  color={isArchived ? "#9e9e9e" : "#757575"}
+                />
+              </ArchiveButton>
+            </ActionsContainer>
+          </ContentContainer>
+        </Card>
+      </TouchableOpacity>
+
+      <NoteEditModal
+        visible={modalVisible}
+        note={note}
+        onClose={() => setModalVisible(false)}
+        onSave={onUpdate}
+        onDelete={handleDelete}
+      />
+    </>
   );
 };
