@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Note } from "../types";
 
-const API_URL = "http://localhost:3000/notes";
+const API_URL = `http://${
+  window.location.hostname || "192.168.0.111"
+}:3000/notes`;
 
 export const useNotes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -15,6 +17,7 @@ export const useNotes = () => {
     try {
       const response = await fetch(API_URL);
       const data = await response.json();
+      console.log(data);
       setNotes(data);
     } catch (e) {
       console.error("Erro ao carregar notas:", e);
@@ -23,7 +26,7 @@ export const useNotes = () => {
 
   const addNote = async (text: string) => {
     const newNote: Note = {
-      id: Math.random().toString(36).substring(2),
+      // _id: Math.random().toString(36).substring(2),
       text,
       timestamp: new Date().toISOString(),
       category: null,
@@ -48,18 +51,20 @@ export const useNotes = () => {
     try {
       const response = await fetch(`${API_URL}/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(updates),
       });
       const updatedNote = await response.json();
-      setNotes(notes.map((note) => (note.id === id ? updatedNote : note)));
+      setNotes(notes.map((note) => (note._id === id ? updatedNote : note)));
     } catch (e) {
       console.error("Erro ao atualizar nota:", e);
     }
   };
 
   const linkNote = async (id: string, linkedId: string) => {
-    const note = notes.find((n) => n.id === id);
+    const note = notes.find((n) => n._id === id);
     if (note && note.category === "permanent") {
       const updatedLinks = [...(note.linkedIds || []), linkedId];
       await updateNote(id, { linkedIds: updatedLinks });

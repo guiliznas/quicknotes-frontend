@@ -1,7 +1,7 @@
-export type Category = "fleeting" | "literature" | "permanent" | null;
+export type Category = "fleeting" | "literature" | "permanent" | "task" | null;
 
 export interface Note {
-  id: string;
+  _id: string;
   text: string;
   timestamp: string;
   category: Category;

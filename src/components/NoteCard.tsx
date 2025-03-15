@@ -1,15 +1,63 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, Button, Switch } from "react-native";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import { Note } from "../types";
 import { CategorySelector } from "./CategorySelector";
+import { Ionicons } from "@expo/vector-icons";
+import { formatTime } from "../utils/dateFormatter";
 
 const Card = styled.View`
-  padding: 10px;
+  padding: 16px;
+  background-color: #ffffff;
   border-bottom-width: 1px;
-  border-bottom-color: #ccc;
-  max-width: 600px;
-  margin: 0 auto;
+  border-bottom-color: #f0f0f0;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const CheckboxContainer = styled.TouchableOpacity`
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  border-color: ${(props) => (props.checked ? "#4caf50" : "#e0e0e0")};
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-right: 12px;
+  background-color: ${(props) => (props.checked ? "#4caf50" : "transparent")};
+`;
+
+const ContentContainer = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const TextContainer = styled.View`
+  flex: 1;
+`;
+
+const NoteText = styled.Text<{ completed: boolean }>`
+  font-size: 16px;
+  color: ${(props) => (props.completed ? "#9e9e9e" : "#000000")};
+  text-decoration-line: ${(props) =>
+    props.completed ? "line-through" : "none"};
+`;
+
+const TimeText = styled.Text`
+  font-size: 12px;
+  color: #9e9e9e;
+  margin-top: 4px;
+`;
+
+const ActionsContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const ArchiveButton = styled.TouchableOpacity`
+  padding: 8px;
+  margin-left: 8px;
 `;
 
 interface NoteCardProps {
@@ -64,63 +112,31 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 
   return (
     <Card>
-      <Text
-        style={{ textDecorationLine: isCompleted ? "line-through" : "none" }}
-      >
-        {note.text}
-      </Text>
-      <Text style={{ fontSize: 12, color: "#666" }}>
-        {new Date(note.timestamp).toLocaleTimeString()}
-      </Text>
-      <CategorySelector
-        selected={note.category}
-        onSelect={(category) => onUpdate({ category })}
-      />
-      {note.category === "literature" && (
-        <View>
-          <TextInput
-            value={reference}
-            onChangeText={setReference}
-            placeholder="Referência (ex.: Livro X, p. 23)"
-            style={{ borderWidth: 1, padding: 5, marginTop: 5 }}
+      <CheckboxContainer checked={isCompleted} onPress={toggleCompleted}>
+        {isCompleted && <Ionicons name="checkmark" size={14} color="#ffffff" />}
+      </CheckboxContainer>
+
+      <ContentContainer>
+        <TextContainer>
+          <NoteText completed={isCompleted}>{note.text}</NoteText>
+          <TimeText>{formatTime(new Date(note.timestamp))}</TimeText>
+        </TextContainer>
+
+        <ActionsContainer>
+          <CategorySelector
+            selected={note.category}
+            onSelect={(category) => onUpdate({ category })}
+            compact
           />
-          <Button title="Salvar Referência" onPress={handleReferenceSave} />
-        </View>
-      )}
-      {note.category === "permanent" && onLink && (
-        <View>
-          <TextInput
-            value={linkId}
-            onChangeText={setLinkId}
-            placeholder="ID da nota para vincular"
-            style={{ borderWidth: 1, padding: 5, marginTop: 5 }}
-          />
-          <Button title="Vincular" onPress={handleLink} />
-          {note.linkedIds?.length > 0 && (
-            <Text>Vinculada a: {note.linkedIds.join(", ")}</Text>
-          )}
-        </View>
-      )}
-      <View style={{ flexDirection: "row", marginTop: 5 }}>
-        {note.category === "fleeting" && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text>Concluída: </Text>
-            <Switch value={isCompleted} onValueChange={toggleCompleted} />
-          </View>
-        )}
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginLeft: 10 }}
-        >
-          <Text>Pública: </Text>
-          <Switch value={isPublic} onValueChange={togglePublic} />
-        </View>
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginLeft: 10 }}
-        >
-          <Text>Arquivada: </Text>
-          <Switch value={isArchived} onValueChange={toggleArchived} />
-        </View>
-      </View>
+          <ArchiveButton onPress={toggleArchived}>
+            <Ionicons
+              name={isArchived ? "archive" : "archive-outline"}
+              size={20}
+              color={isArchived ? "#9e9e9e" : "#757575"}
+            />
+          </ArchiveButton>
+        </ActionsContainer>
+      </ContentContainer>
     </Card>
   );
 };
