@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "147961614550",
+    "project_id": "quicknotez-1c0ca",
+    "storage_bucket": "quicknotez-1c0ca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147961614550:android:1cc6f9563373d3d8e9b977",
+        "android_client_info": {
+          "package_name": "com.ziltro.quicknotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdM97OF1RBFZGIWrct86j1aRyJZ-dTtP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,51 +3,57 @@ import { View, Switch, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import LoginButton from '../components/LoginButton';
+import { Theme } from '../theme/colors';
 
-const Container = styled.View`
+interface StyledProps {
+  theme: Theme;
+}
+
+const Container = styled.View<StyledProps>`
   flex: 1;
-  background-color: ${props => props.theme.background.secondary};
+  background-color: ${(props) => props.theme.background.secondary};
 `;
 
-const Header = styled.View`
+const Header = styled.View<StyledProps>`
   padding-top: 20px;
-  background-color: ${props => props.theme.background.primary};
+  background-color: ${(props) => props.theme.background.primary};
 `;
 
-const Title = styled.Text`
+const Title = styled.Text<StyledProps>`
   font-size: 24px;
   font-weight: bold;
   padding: 16px;
-  color: ${props => props.theme.text.primary};
+  color: ${(props) => props.theme.text.primary};
 `;
 
-const SettingsSection = styled.View`
+const SettingsSection = styled.View<StyledProps>`
   margin: 16px;
-  background-color: ${props => props.theme.background.primary};
+  background-color: ${(props) => props.theme.background.primary};
   border-radius: 12px;
   overflow: hidden;
 `;
 
-const SectionHeader = styled.View`
+const SectionHeader = styled.View<StyledProps>`
   padding: 12px 16px;
-  background-color: ${props => props.theme.background.tertiary};
+  background-color: ${(props) => props.theme.background.tertiary};
 `;
 
-const SectionTitle = styled.Text`
+const SectionTitle = styled.Text<StyledProps>`
   font-size: 14px;
-  color: ${props => props.theme.text.secondary};
+  color: ${(props) => props.theme.text.secondary};
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 `;
 
-const SettingsItem = styled.View`
+const SettingsItem = styled.View<StyledProps>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
   border-bottom-width: 1px;
-  border-bottom-color: ${props => props.theme.divider};
+  border-bottom-color: ${(props) => props.theme.divider};
 `;
 
 const SettingsItemLeft = styled.View`
@@ -55,24 +61,24 @@ const SettingsItemLeft = styled.View`
   align-items: center;
 `;
 
-const IconContainer = styled.View`
+const IconContainer = styled.View<StyledProps>`
   width: 36px;
   height: 36px;
   border-radius: 18px;
-  background-color: ${props => props.theme.primaryLight};
+  background-color: ${(props) => props.theme.primaryLight};
   justify-content: center;
   align-items: center;
   margin-right: 12px;
 `;
 
-const SettingsLabel = styled.Text`
+const SettingsLabel = styled.Text<StyledProps>`
   font-size: 16px;
-  color: ${props => props.theme.text.primary};
+  color: ${(props) => props.theme.text.primary};
 `;
 
-const SettingsDescription = styled.Text`
+const SettingsDescription = styled.Text<StyledProps>`
   font-size: 14px;
-  color: ${props => props.theme.text.secondary};
+  color: ${(props) => props.theme.text.secondary};
   margin-top: 4px;
 `;
 
@@ -85,6 +91,9 @@ export const SettingsScreen: React.FC = () => {
         <Title>Configurações</Title>
       </Header>
       <ScrollView>
+
+        <LoginButton />
+        
         <SettingsSection>
           <SectionHeader>
             <SectionTitle>Aparência</SectionTitle>

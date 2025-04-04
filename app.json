@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "com.ziltro.quicknotes",
     "name": "quicknotes",
     "slug": "quicknotes",
     "version": "1.0.0",
@@ -13,9 +14,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.ziltro.quicknotes",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.ziltro.quicknotes",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -23,6 +27,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      ["react-native-auth0", {
+        "domain": "dev-a5xb3b1qq5srkyam.us.auth0.com"
+      }]
+    ]
   }
 }
