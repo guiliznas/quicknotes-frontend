@@ -1,70 +1,51 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity, View, Text, ActivityIndicator, StyleSheet, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 const LoginButton: React.FC = () => {
   const { theme } = useTheme();
-  const { isAuthenticated, isLoading, user, logout, loginWithRedirect } = useAuth0();
-  const [error, setError] = useState<string | null>(null);
-  const [localLoading, setLocalLoading] = useState(false);
+  // Use useAuth hook
+  const { user, loading, signInWithGoogle, signOut } = useAuth();
 
   const handleLogin = async () => {
     try {
-      await loginWithRedirect();
+      await signInWithGoogle();
     } catch (e: any) {
-      console.log('Erro de login:', e);
-      setError(e.message || 'Ocorreu um erro durante o login');
+      console.log('Erro de login com Google:', e);
+      Alert.alert('Erro de Login', e.message || 'Ocorreu um erro durante o login com Google.');
     }
   };
 
   const handleLogout = async () => {
     try {
-      setLocalLoading(true);
-      setError(null);
-      await logout();
+      await signOut();
     } catch (e: any) {
       console.log('Erro de logout:', e);
-      setError(e.message || 'Ocorreu um erro durante o logout');
-    } finally {
-      setLocalLoading(false);
+      Alert.alert('Erro de Logout', e.message || 'Ocorreu um erro durante o logout.');
     }
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <ActivityIndicator size="large" color={theme.primary} />
-  //       <Text style={[styles.loadingText, { color: theme.text.secondary }]}>
-  //         Carregando...
-  //       </Text>
-  //     </View>
-  //   );
-  // }
-
-  if (error) {
+  if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={[styles.errorText, { color: theme.error }]}>
-          Erro: {error}
+        <ActivityIndicator size="large" color={theme.primary} />
+        <Text style={[styles.loadingText, { color: theme.text.secondary }]}>
+          Carregando...
         </Text>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: theme.primary }]}
-          onPress={handleLogin}
-        >
-          <Text style={styles.buttonText}>Tentar novamente</Text>
-        </TouchableOpacity>
       </View>
     );
   }
 
-  if (isAuthenticated && user) {
+  // Removed Auth0-specific error block, basic error handling is in handleLogin/handleLogout
+
+  if (user) { // Check for user object from useAuth
     return (
       <View style={styles.container}>
         <View style={styles.userInfoContainer}>
-          {user.picture ? (
-            <Image source={{ uri: user.picture }} style={styles.userAvatar} />
+          {user.photoUrl ? ( // Use user.photoUrl
+            <Image source={{ uri: user.photoUrl }} style={styles.userAvatar} />
           ) : (
             <View style={[styles.userAvatarPlaceholder, { backgroundColor: theme.primaryLight }]}>
               <Ionicons name="person" size={24} color={theme.primary} />
@@ -84,7 +65,7 @@ const LoginButton: React.FC = () => {
 
         <TouchableOpacity
           style={[styles.button, styles.logoutButton, { backgroundColor: theme.error }]}
-          onPress={handleLogout}
+          onPress={handleLogout} // Use updated handleLogout
         >
           <Ionicons name="log-out-outline" size={18} color="#FFFFFF" style={styles.buttonIcon} />
           <Text style={styles.buttonText}>Sair</Text>
@@ -97,10 +78,10 @@ const LoginButton: React.FC = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.button, { backgroundColor: theme.primary }]}
-        onPress={handleLogin}
+        onPress={handleLogin} // Use updated handleLogin
       >
-        <Ionicons name="log-in-outline" size={18} color="#FFFFFF" style={styles.buttonIcon} />
-        <Text style={styles.buttonText}>Entrar com Auth0</Text>
+        <Ionicons name="logo-google" size={18} color="#FFFFFF" style={styles.buttonIcon} />
+        <Text style={styles.buttonText}>Entrar com Google</Text>
       </TouchableOpacity>
     </View>
   );

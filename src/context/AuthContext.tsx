@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GOOGLE_WEB_CLIENT_ID } from '@env';
 
 interface User {
   id: string;
@@ -25,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     GoogleSignin.configure({
       // You'll need to get this from Google Cloud Console
-      webClientId: 'YOUR_WEB_CLIENT_ID',
+      webClientId: GOOGLE_WEB_CLIENT_ID,
     });
     checkUser();
   }, []);

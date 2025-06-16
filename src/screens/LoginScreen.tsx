@@ -2,17 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, SafeAreaView, Dimensions, Modal, TouchableOpacity } from 'react-native';
 import LoginButton from '../components/LoginButton';
 import { useTheme } from '../theme/ThemeContext';
-import { useAuth } from '../../App';
+import { useAuth } from '../context/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
 const LoginScreen: React.FC = () => {
   const { theme } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth(); // Changed isAuthenticated to user
   const [modalVisible, setModalVisible] = React.useState(true);
 
   // Se o usuário já estiver autenticado, não mostra a tela de login
-  if (isAuthenticated) {
+  if (user) { // Changed isAuthenticated to user
     return null;
   }
 
